@@ -1,0 +1,48 @@
+[
+  {
+    "name": "OneDriveAndSharePoint",
+    "x-disable_file_prefetch": true,
+    "items_by_sharepoint_ids": [
+      {
+        "site_id": "6eba75fe-6b1b-453b-85a9-37023ab8575f",
+        "web_id": "9734839c-8524-45fc-874e-41fc67511d27",
+        "list_id": "683cea62-3fe9-4f36-9d63-1847892e5183",
+        "unique_id": "96765994-0c1e-4d47-9255-b9de553eba13",
+        "type": "File"
+      }
+    ]
+  },
+  {
+    "name": "WebSearch",
+    "sites": [
+      {
+        "url": "https://en.wikipedia.org/wiki/LLM-as-a-Judge",
+        "x-is_leaf_page": true,
+        "x-title": "LLM-as-a-Judge"
+      }
+    ],
+    "x-enable_scoped_search_agent": true
+  },
+  {
+    "name": "Email",
+    "x-items_by_id": [
+      {
+        "message_id": "AAkALgAAAAAAHYQDEapmEc2byACqAC-EWg0Az9Vje6RIzkOFiKTlg4cr4gAFAJHA3wAA",
+        "conversation_id": "AAQkAGUzZDYyYjJhLThkOWQtNDA0NC05ZmYxLWQ3ZDIwNjg0ZTJmZAAQAAObi8f60gdPumBR8EgdLcc=",
+        "subject": "Latest ArXiv Papers on Large Language Models: A Summary"
+      }
+    ]
+  },
+  {
+    "name": "Meetings",
+    "x-items_by_id": [
+      {
+        "id": "AAMkAGUzZDYyYjJhLThkOWQtNDA0NC05ZmYxLWQ3ZDIwNjg0ZTJmZABGAAAAAAAjZ2rTM3AyQJau5Za67naaBwDP1WN7pEjOQ4WIpOWDhyviAAAAAAENAADP1WN7pEjOQ4WIpOWDhyviAAT6haksAAA=",
+        "subject": "[Give] 🌍 Join Us: Virtual Volunteering with Instant Wild Conservation ",
+        "is_series": false
+      }
+    ]
+  },
+  { "name": "CodeInterpreter" },
+  { "name": "Pages" }
+]

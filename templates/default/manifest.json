@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "id": "56c44d22-7754-40f2-8f95-d819f544482d",
+  "developer": {
+    "name": "Jackie Yin",
+    "websiteUrl": "https://go.microsoft.com/fwlink/?linkid=2138949",
+    "privacyUrl": "https://go.microsoft.com/fwlink/?linkid=2138865",
+    "termsOfUseUrl": "https://go.microsoft.com/fwlink/?linkid=2138950"
+  },
+  "name": { "short": "ArXivAINewsletter", "full": "ArXivAINewsletter" },
+  "description": {
+    "short": "Built using Microsoft Copilot Studio",
+    "full": "-"
+  },
+  "icons": { "outline": "outline.png", "color": "color.png" },
+  "accentColor": "#E0F6FC",
+  "validDomains": [
+    "*.botframework.com",
+    "*.*.botframework.com",
+    "copilotstudio.microsoft.com",
+    "copilotstudio.preview.microsoft.com"
+  ],
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.21",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "6df12c12-8def-4238-8ee8-d091dfb510dd",
+        "file": "declarativeAgent_0.json"
+      }
+    ]
+  }
+}

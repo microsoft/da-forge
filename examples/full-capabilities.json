@@ -1,0 +1,48 @@
+[
+  {
+    "name": "OneDriveAndSharePoint",
+    "x-disable_file_prefetch": true,
+    "items_by_sharepoint_ids": [
+      {
+        "site_id": "00000000-0000-0000-0000-000000000000",
+        "web_id": "00000000-0000-0000-0000-000000000000",
+        "list_id": "00000000-0000-0000-0000-000000000000",
+        "unique_id": "00000000-0000-0000-0000-000000000000",
+        "type": "File"
+      }
+    ]
+  },
+  {
+    "name": "WebSearch",
+    "sites": [
+      {
+        "url": "https://en.wikipedia.org/wiki/LLM-as-a-Judge",
+        "x-is_leaf_page": true,
+        "x-title": "LLM-as-a-Judge"
+      }
+    ],
+    "x-enable_scoped_search_agent": true
+  },
+  {
+    "name": "Email",
+    "x-items_by_id": [
+      {
+        "message_id": "EXAMPLE_MESSAGE_ID",
+        "conversation_id": "EXAMPLE_CONVERSATION_ID",
+        "subject": "Example Email Subject"
+      }
+    ]
+  },
+  {
+    "name": "Meetings",
+    "x-items_by_id": [
+      {
+        "id": "EXAMPLE_MEETING_ID",
+        "subject": "Example Meeting Subject",
+        "is_series": false
+      }
+    ]
+  },
+  { "name": "CodeInterpreter" },
+  { "name": "Pages" }
+]
