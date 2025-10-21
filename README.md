@@ -118,27 +118,7 @@ Shows all socket files in `sockets/` folder.
 
 ## Development
 
-### Setup development environment
-
-```bash
-# Clone and install with dev dependencies
-git clone https://github.com/yourusername/da-forge.git
-cd da-forge
-pip install -e ".[dev]"
-```
-
-### Run tests
-
-```bash
-pytest
-```
-
-### Format code
-
-```bash
-black da_forge/
-ruff check da_forge/
-```
+See [docs/development.md](docs/development.md) for development setup, testing, and code formatting instructions.
 
 ---
 
@@ -148,7 +128,9 @@ ruff check da_forge/
 
 **Error:** `✗ Socket file not found: sockets/my-agent.json`
 
-**Solution:** Make sure you've created the socket file first. See [examples/README.md](examples/README.md).
+**Solution:** Create the socket file first:
+1. Extract capabilities JSON from your Copilot Notebook (see [docs/capabilities.md](docs/capabilities.md))
+2. Save it to `sockets/my-agent.json`
 
 ### teamsapp command not found
 
@@ -159,14 +141,41 @@ ruff check da_forge/
 npm install -g @microsoft/teamsapp-cli
 ```
 
+### Failed to create manifest
+
+**Error:** `✗ Failed to create manifest: Template folder not found`
+
+**Solution:** Ensure the `templates/default/` directory exists with required files:
+- `manifest.json`
+- `declarativeAgent_0.json`
+- `color.png`
+- `outline.png`
+
+### Failed to revise manifest
+
+**Error:** `✗ Failed to revise manifest: [error details]`
+
+**Common causes:**
+- **Invalid JSON in socket file** - Verify your socket file contains valid JSON
+- **Missing capabilities array** - Ensure socket file has a capabilities array
+- **Corrupted manifest files** - Re-run deployment to regenerate manifests
+
+### Failed to zip manifest
+
+**Error:** `✗ Failed to zip manifest: Manifest folder not found`
+
+**Solution:** This typically happens if earlier steps failed. Check that `raw_manifests/my-agent/` exists with all required files.
+
 ### Sideload failed
 
 **Error:** `✗ Sideload failed with return code: 1`
 
 **Solution:**
 - Ensure you're logged into Teams Toolkit: `teamsapp account show`
-- Check if the manifest is valid
-- Try manual installation: Upload the zip from `zipped_manifests/` in Teams
+- If authentication fails, run: `teamsapp account login m365`
+- If sideload continues to fail, manually upload the zip from `zipped_manifests/` in Teams
+
+**Note:** Even if sideload fails, your manifest zip is created successfully and can be manually installed.
 
 ---
 
@@ -180,19 +189,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
----
-
-## Acknowledgments
-
-Built to simplify Declarative Agent development with Microsoft 365 grounding.
-
----
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/da-forge/issues)
-- **Documentation**: See [examples/](examples/) folder
-
----
 
 **Made with ❤️ for Microsoft 365 developers**
