@@ -56,14 +56,6 @@ After installation, the `da-forge` command will be available globally.
 
 **Step 1: Extract Socket JSON from Copilot Notebook**
 
-1. Open your Copilot Notebook in Microsoft 365
-2. Add your grounding references (emails, meetings, files, pages)
-3. Open Browser DevTools (F12) → **Network** tab
-4. Look for API calls to `create` or `update` endpoints
-5. Find the request payload containing your capabilities array
-6. Copy the capabilities JSON array
-7. Save to: `sockets/my-notebook-agent.json`
-
 📖 **Detailed guide:** See [docs/capabilities.md](docs/capabilities.md) for step-by-step instructions with screenshots.
 
 **Step 2: Deploy Your Agent**
