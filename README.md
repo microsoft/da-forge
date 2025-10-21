@@ -41,9 +41,21 @@ Your Declarative Agent is now live in Teams with all the grounding context from 
 
 ### Installation
 
+**Option 1: Install from GitHub (Recommended)**
+
+```bash
+# Install latest release
+pip install git+https://github.com/microsoft/da-forge.git
+
+# Or install a specific version
+pip install git+https://github.com/microsoft/da-forge.git@v1.0.0
+```
+
+**Option 2: Install from source (for development)**
+
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/da-forge.git
+git clone https://github.com/microsoft/da-forge.git
 cd da-forge
 
 # Install in editable mode
@@ -54,15 +66,40 @@ After installation, the `da-forge` command will be available globally.
 
 ### Usage
 
-**Step 1: Extract Socket JSON from Copilot Notebook**
+The workflow differs slightly depending on how you installed:
 
-📖 **Detailed guide:** See [docs/capabilities.md](docs/capabilities.md) for step-by-step instructions with screenshots.
+**If you installed via pip (Option 1):**
 
-**Step 2: Deploy Your Agent**
+1. **Set up your project directory**
+   ```bash
+   mkdir my-agents
+   cd my-agents
+   mkdir sockets
+   ```
 
-```bash
-da-forge deploy my-notebook-agent
-```
+2. **Extract and save socket JSON**
+
+   📖 See [docs/capabilities.md](docs/capabilities.md) for detailed extraction steps.
+
+   Save the extracted socket JSON to `sockets/my-agent.json`
+
+3. **Deploy your agent**
+   ```bash
+   da-forge deploy my-agent
+   ```
+
+**If you cloned the repository (Option 2):**
+
+1. **Extract and save socket JSON**
+
+   📖 See [docs/capabilities.md](docs/capabilities.md) for detailed extraction steps.
+
+   Save the extracted socket JSON to `sockets/my-agent.json` in the repository
+
+2. **Deploy your agent**
+   ```bash
+   da-forge deploy my-agent
+   ```
 
 That's it! Your Declarative Agent is now deployed to Teams with all your Notebook's grounding context.
 

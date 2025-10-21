@@ -27,7 +27,7 @@ Workflow:
   2. Run: da-forge deploy <name>
   3. Agent is deployed to Teams!
 
-For more information: https://github.com/yourusername/da-forge
+For more information: https://github.com/microsoft/da-forge
         """,
     )
 
