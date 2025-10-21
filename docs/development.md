@@ -4,7 +4,7 @@
 
 ```bash
 # Clone and install with dev dependencies
-git clone https://github.com/yourusername/da-forge.git
+git clone https://github.com/microsoft/da-forge.git
 cd da-forge
 pip install -e ".[dev]"
 ```
@@ -70,6 +70,39 @@ The project uses [Semantic Versioning](https://semver.org/) (SemVer): `MAJOR.MIN
    - Create a GitHub Release with auto-generated changelog
    - Attach built artifacts to the release
 
+6. **Write release notes (optional but recommended)**
+
+   After the automated release is created, you can edit it on GitHub to add custom release notes:
+
+   - Go to: https://github.com/microsoft/da-forge/releases
+   - Click "Edit" on the newly created release
+   - The auto-generated notes will already be there
+   - Add a summary at the top describing key changes
+
+   **Example release message format:**
+
+   ```markdown
+   ## What's New in v1.0.1
+
+   ### Features
+   - Added support for XYZ capability
+   - Improved error messages for ABC
+
+   ### Bug Fixes
+   - Fixed issue with manifest generation (#123)
+   - Resolved sideload authentication problem
+
+   ### Documentation
+   - Updated installation instructions
+   - Added troubleshooting guide for common errors
+
+   ---
+
+   **Full Changelog**: https://github.com/microsoft/da-forge/compare/v1.0.0...v1.0.1
+   ```
+
+   The workflow automatically generates a changelog from commits/PRs, but adding a human-readable summary helps users quickly understand what changed.
+
 ### Version Validation
 
 The release workflow enforces consistency between the git tag and `pyproject.toml` version:
@@ -83,10 +116,10 @@ Users can install specific versions using:
 
 ```bash
 # Install latest release
-pip install git+https://github.com/yourusername/da-forge.git
+pip install git+https://github.com/microsoft/da-forge.git
 
 # Install specific version
-pip install git+https://github.com/yourusername/da-forge.git@v1.0.1
+pip install git+https://github.com/microsoft/da-forge.git@v1.0.1
 ```
 
 ## Code Maintenance

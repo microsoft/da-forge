@@ -383,5 +383,5 @@ In DevTools Network tab, filter by "Fetch/XHR" to reduce noise.
 ## Need Help?
 
 - **Examples:** See `examples/` folder for template socket files
-- **Issues:** [GitHub Issues](https://github.com/yourusername/da-forge/issues)
+- **Issues:** [GitHub Issues](https://github.com/microsoft/da-forge/issues)
 - **Main README:** [README.md](../README.md)

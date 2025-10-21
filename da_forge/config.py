@@ -2,17 +2,43 @@
 Configuration constants for DA-Forge.
 """
 
-import os
 from pathlib import Path
 
-# Get project root directory
+# Get project root directory (package installation location)
 PROJECT_ROOT = Path(__file__).parent.parent
 
-# Folder paths (relative to project root)
-SOCKET_FOLDER = PROJECT_ROOT / "sockets"
-RAW_MANIFEST_FOLDER = PROJECT_ROOT / "raw_manifests"
-ZIPPED_MANIFESTS_FOLDER = PROJECT_ROOT / "zipped_manifests"
-TEMPLATE_FOLDER = PROJECT_ROOT / "templates" / "default"
+# Get current working directory
+CURRENT_DIR = Path.cwd()
+
+
+def _get_folder_path(folder_name: str) -> Path:
+    """
+    Get folder path, checking current directory first, then package directory.
+
+    This allows users to work in their own project directory or use the package directory.
+
+    Args:
+        folder_name: Name of the folder to find
+
+    Returns:
+        Path to the folder (current dir takes precedence)
+    """
+    current_dir_path = CURRENT_DIR / folder_name
+    package_dir_path = PROJECT_ROOT / folder_name
+
+    # Check current directory first
+    if current_dir_path.exists():
+        return current_dir_path
+
+    # Fall back to package directory
+    return package_dir_path
+
+
+# Folder paths (check current directory first, then package directory)
+SOCKET_FOLDER = _get_folder_path("sockets")
+RAW_MANIFEST_FOLDER = _get_folder_path("raw_manifests")
+ZIPPED_MANIFESTS_FOLDER = _get_folder_path("zipped_manifests")
+TEMPLATE_FOLDER = _get_folder_path("templates") / "default"
 
 # File names
 MANIFEST_FILENAME = "declarativeAgent_0.json"

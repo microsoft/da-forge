@@ -34,9 +34,9 @@ dev = [
 da-forge = "da_forge.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/da-forge"
-Repository = "https://github.com/yourusername/da-forge"
-Issues = "https://github.com/yourusername/da-forge/issues"
+Homepage = "https://github.com/microsoft/da-forge"
+Repository = "https://github.com/microsoft/da-forge"
+Issues = "https://github.com/microsoft/da-forge/issues"
 
 [build-system]
 requires = ["hatchling"]
