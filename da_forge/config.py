@@ -4,41 +4,68 @@ Configuration constants for DA-Forge.
 
 from pathlib import Path
 
-# Get project root directory (package installation location)
-PROJECT_ROOT = Path(__file__).parent.parent
+# Get package directory (where da_forge is installed)
+PACKAGE_DIR = Path(__file__).parent
 
 # Get current working directory
 CURRENT_DIR = Path.cwd()
 
 
-def _get_folder_path(folder_name: str) -> Path:
+def _get_socket_folder() -> Path:
     """
-    Get folder path, checking current directory first, then package directory.
+    Get sockets folder path.
 
-    This allows users to work in their own project directory or use the package directory.
-
-    Args:
-        folder_name: Name of the folder to find
+    Checks current directory first, then falls back to package directory.
+    This allows both pip-installed and cloned-repo workflows.
 
     Returns:
-        Path to the folder (current dir takes precedence)
+        Path to sockets folder
     """
-    current_dir_path = CURRENT_DIR / folder_name
-    package_dir_path = PROJECT_ROOT / folder_name
+    current_dir_path = CURRENT_DIR / "sockets"
+    package_dir_path = PACKAGE_DIR.parent / "sockets"
 
-    # Check current directory first
     if current_dir_path.exists():
         return current_dir_path
 
-    # Fall back to package directory
     return package_dir_path
 
 
-# Folder paths (check current directory first, then package directory)
-SOCKET_FOLDER = _get_folder_path("sockets")
-RAW_MANIFEST_FOLDER = _get_folder_path("raw_manifests")
-ZIPPED_MANIFESTS_FOLDER = _get_folder_path("zipped_manifests")
-TEMPLATE_FOLDER = _get_folder_path("templates") / "default"
+def _get_output_folder(folder_name: str) -> Path:
+    """
+    Get output folder path in current directory.
+
+    Auto-creates the folder if it doesn't exist.
+    Output folders (raw_manifests, zipped_manifests) are always created
+    in the current working directory.
+
+    Args:
+        folder_name: Name of the folder
+
+    Returns:
+        Path to the folder in current directory
+    """
+    folder_path = CURRENT_DIR / folder_name
+    folder_path.mkdir(parents=True, exist_ok=True)
+    return folder_path
+
+
+def _get_template_folder() -> Path:
+    """
+    Get templates folder path.
+
+    Always uses the package's bundled templates.
+
+    Returns:
+        Path to templates/default folder in package
+    """
+    return PACKAGE_DIR / "templates" / "default"
+
+
+# Folder paths
+SOCKET_FOLDER = _get_socket_folder()
+RAW_MANIFEST_FOLDER = _get_output_folder("raw_manifests")
+ZIPPED_MANIFESTS_FOLDER = _get_output_folder("zipped_manifests")
+TEMPLATE_FOLDER = _get_template_folder()
 
 # File names
 MANIFEST_FILENAME = "declarativeAgent_0.json"

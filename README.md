@@ -66,40 +66,34 @@ After installation, the `da-forge` command will be available globally.
 
 ### Usage
 
-The workflow differs slightly depending on how you installed:
+**Step 1: Set up your project**
 
-**If you installed via pip (Option 1):**
+```bash
+# Create a directory for your agents
+mkdir my-agents
+cd my-agents
 
-1. **Set up your project directory**
-   ```bash
-   mkdir my-agents
-   cd my-agents
-   mkdir sockets
-   ```
+# Create sockets folder for your socket files
+mkdir sockets
+```
 
-2. **Extract and save socket JSON**
+**Step 2: Extract and save socket JSON**
 
-   📖 See [docs/capabilities.md](docs/capabilities.md) for detailed extraction steps.
+📖 **Detailed guide:** See [docs/capabilities.md](docs/capabilities.md) for step-by-step extraction instructions.
 
-   Save the extracted socket JSON to `sockets/my-agent.json`
+Save the extracted socket JSON to `sockets/my-agent.json`
 
-3. **Deploy your agent**
-   ```bash
-   da-forge deploy my-agent
-   ```
+**Step 3: Deploy your agent**
 
-**If you cloned the repository (Option 2):**
+```bash
+da-forge deploy my-agent
+```
 
-1. **Extract and save socket JSON**
-
-   📖 See [docs/capabilities.md](docs/capabilities.md) for detailed extraction steps.
-
-   Save the extracted socket JSON to `sockets/my-agent.json` in the repository
-
-2. **Deploy your agent**
-   ```bash
-   da-forge deploy my-agent
-   ```
+The tool will automatically:
+- Use bundled templates from the package
+- Create `raw_manifests/` with generated manifest files
+- Create `zipped_manifests/` with the deployment package
+- Sideload to Teams (or skip with `--skip-sideload`)
 
 That's it! Your Declarative Agent is now deployed to Teams with all your Notebook's grounding context.
 
@@ -174,11 +168,9 @@ npm install -g @microsoft/teamsapp-cli
 
 **Error:** `✗ Failed to create manifest: Template folder not found`
 
-**Solution:** Ensure the `templates/default/` directory exists with required files:
-- `manifest.json`
-- `declarativeAgent_0.json`
-- `color.png`
-- `outline.png`
+**Solution:** This error should not occur with pip-installed packages as templates are bundled. If you encounter this:
+- Reinstall the package: `pip install --force-reinstall git+https://github.com/microsoft/da-forge.git`
+- If you cloned the repo, ensure `da_forge/templates/default/` exists with all required files
 
 ### Failed to revise manifest
 
