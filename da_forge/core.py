@@ -26,7 +26,7 @@ def validate_socket_file(name: str) -> bool:
     if not socket_path.exists():
         print(f"✗ Socket file not found: {socket_path}")
         print(f"\nPlease create the socket file first:")
-        print(f"  1. Get socket JSON from web (see examples/README.md)")
+        print(f"  1. Extract socket JSON from Copilot Notebook (see docs/capabilities.md)")
         print(f"  2. Save it to: {socket_path}")
         return False
     print(f"✓ Socket file found: {socket_path}")
