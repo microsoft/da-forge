@@ -2,11 +2,59 @@
 ZIP packaging logic for Declarative Agent manifests.
 """
 
+import json
 import shutil
+import zipfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 from da_forge import config
+
+
+def extract_ids_from_zip(zip_path: Path) -> Optional[Tuple[str, str]]:
+    """
+    Extract manifest_id and declarative_agent_id from an existing zip file.
+
+    Args:
+        zip_path: Path to the existing zip file
+
+    Returns:
+        Tuple of (manifest_id, declarative_agent_id) if successful, None otherwise
+
+    Note:
+        Reads manifest.json from the zip to extract:
+        - manifest_id: The main id field
+        - declarative_agent_id: The copilotAgents.declarativeAgents[0].id field
+    """
+    if not zip_path.exists():
+        return None
+
+    try:
+        with zipfile.ZipFile(zip_path, "r") as zip_file:
+            # Read manifest.json from the zip
+            manifest_path = "manifest.json"
+            if manifest_path not in zip_file.namelist():
+                return None
+
+            with zip_file.open(manifest_path) as manifest_file:
+                manifest_json = json.load(manifest_file)
+
+            # Extract the two IDs
+            manifest_id = manifest_json.get("id")
+            declarative_agent_id = (
+                manifest_json.get("copilotAgents", {})
+                .get("declarativeAgents", [{}])[0]
+                .get("id")
+            )
+
+            if manifest_id and declarative_agent_id:
+                return (manifest_id, declarative_agent_id)
+
+    except (zipfile.BadZipFile, json.JSONDecodeError, KeyError, IndexError):
+        # If anything goes wrong, return None
+        pass
+
+    return None
 
 
 def zip_manifest(name: str) -> Path:

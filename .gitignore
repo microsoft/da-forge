@@ -45,6 +45,11 @@ raw_manifests/*
 zipped_manifests/*
 !zipped_manifests/.gitkeep
 
+# Sockets: Ignore all except .gitkeep and example.json
+sockets/*
+!sockets/.gitkeep
+!sockets/example.json
+
 # Logs
 *.log
 logs/
