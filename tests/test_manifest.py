@@ -229,3 +229,108 @@ def test_revise_da_manifest_missing_manifest(temp_dirs):
 
     with pytest.raises(FileNotFoundError, match="Manifest file not found"):
         manifest.revise_da_manifest(name)
+
+
+def test_create_raw_manifest_with_existing_ids(temp_dirs):
+    """Test creating a raw manifest with existing IDs."""
+    name = "TestAgent"
+    description = "Test description"
+    instruction = "Test instruction"
+
+    # Predefined IDs to preserve
+    existing_manifest_id = "preserved-manifest-id-123"
+    existing_da_id = "preserved-da-id-456"
+    existing_ids = (existing_manifest_id, existing_da_id)
+
+    # Create manifest with existing IDs
+    manifest_folder = manifest.create_raw_manifest(
+        name, description, instruction, existing_ids=existing_ids
+    )
+
+    # Check manifest.json uses the provided IDs
+    with open(manifest_folder / config.APP_MANIFEST_FILENAME) as f:
+        app_manifest = json.load(f)
+
+    assert app_manifest["id"] == existing_manifest_id
+    assert app_manifest["copilotAgents"]["declarativeAgents"][0]["id"] == existing_da_id
+
+    # Check declarativeAgent_0.json uses the provided IDs
+    with open(manifest_folder / config.MANIFEST_FILENAME) as f:
+        da_manifest = json.load(f)
+
+    assert da_manifest["id"] == existing_da_id
+
+    # IDs should match between files
+    assert da_manifest["id"] == app_manifest["copilotAgents"]["declarativeAgents"][0]["id"]
+
+
+def test_create_raw_manifest_generates_new_ids_when_none_provided(temp_dirs):
+    """Test that new UUIDs are generated when no existing IDs are provided."""
+    name = "TestAgent"
+
+    # Create two manifests without providing IDs
+    folder1 = manifest.create_raw_manifest(name + "1")
+    folder2 = manifest.create_raw_manifest(name + "2")
+
+    # Read IDs from both manifests
+    with open(folder1 / config.APP_MANIFEST_FILENAME) as f:
+        manifest1 = json.load(f)
+
+    with open(folder2 / config.APP_MANIFEST_FILENAME) as f:
+        manifest2 = json.load(f)
+
+    # Verify IDs are different (new UUIDs generated each time)
+    assert manifest1["id"] != manifest2["id"]
+    assert (
+        manifest1["copilotAgents"]["declarativeAgents"][0]["id"]
+        != manifest2["copilotAgents"]["declarativeAgents"][0]["id"]
+    )
+
+
+def test_create_raw_manifest_truncates_long_names(temp_dirs):
+    """Test that names longer than 30 characters are truncated in short name field."""
+    # Create a name longer than 30 characters
+    long_name = "ThisIsAVeryLongAgentNameThatExceeds30Characters"
+    assert len(long_name) > 30
+
+    manifest_folder = manifest.create_raw_manifest(long_name, "desc", "inst")
+
+    # Read the manifest
+    with open(manifest_folder / config.APP_MANIFEST_FILENAME) as f:
+        app_manifest = json.load(f)
+
+    # Verify short name is truncated to 30 characters
+    assert len(app_manifest["name"]["short"]) == 30
+    assert app_manifest["name"]["short"] == long_name[:30]
+
+    # Verify full name is not truncated
+    assert app_manifest["name"]["full"] == long_name
+
+
+def test_create_raw_manifest_preserves_short_names(temp_dirs):
+    """Test that names 30 characters or less are not modified."""
+    # Create a name exactly 30 characters
+    exact_name = "A" * 30
+    assert len(exact_name) == 30
+
+    manifest_folder = manifest.create_raw_manifest(exact_name, "desc", "inst")
+
+    # Read the manifest
+    with open(manifest_folder / config.APP_MANIFEST_FILENAME) as f:
+        app_manifest = json.load(f)
+
+    # Verify short name is preserved
+    assert app_manifest["name"]["short"] == exact_name
+    assert app_manifest["name"]["full"] == exact_name
+
+    # Test with shorter name
+    short_name = "ShortAgent"
+    assert len(short_name) < 30
+
+    manifest_folder2 = manifest.create_raw_manifest(short_name, "desc", "inst")
+
+    with open(manifest_folder2 / config.APP_MANIFEST_FILENAME) as f:
+        app_manifest2 = json.load(f)
+
+    assert app_manifest2["name"]["short"] == short_name
+    assert app_manifest2["name"]["full"] == short_name

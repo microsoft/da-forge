@@ -163,3 +163,89 @@ def test_zip_manifest_empty_folder(temp_dirs):
     assert zip_path.exists()
     with zipfile.ZipFile(zip_path, "r") as zf:
         assert len(zf.namelist()) == 0
+
+
+def test_extract_ids_from_zip(temp_dirs):
+    """Test extracting IDs from an existing zip file."""
+    name = "TestAgent"
+
+    # Create a manifest folder with proper structure
+    manifest_folder = temp_dirs["raw_manifest"] / name
+    manifest_folder.mkdir()
+
+    # Create manifest.json with IDs
+    manifest_content = {
+        "id": "test-manifest-id-12345",
+        "name": {"short": name, "full": name},
+        "copilotAgents": {
+            "declarativeAgents": [
+                {"id": "test-da-id-67890"}
+            ]
+        }
+    }
+
+    import json
+    (manifest_folder / "manifest.json").write_text(json.dumps(manifest_content))
+
+    # Create the zip
+    zip_path = packaging.zip_manifest(name)
+
+    # Extract IDs from the zip
+    result = packaging.extract_ids_from_zip(zip_path)
+
+    # Verify the IDs
+    assert result is not None
+    manifest_id, da_id = result
+    assert manifest_id == "test-manifest-id-12345"
+    assert da_id == "test-da-id-67890"
+
+
+def test_extract_ids_from_zip_nonexistent(temp_dirs):
+    """Test extracting IDs from a non-existent zip file."""
+    zip_path = temp_dirs["zipped"] / "NonExistent.zip"
+    result = packaging.extract_ids_from_zip(zip_path)
+    assert result is None
+
+
+def test_extract_ids_from_zip_invalid_structure(temp_dirs):
+    """Test extracting IDs from a zip with invalid manifest structure."""
+    name = "InvalidAgent"
+
+    # Create a manifest folder with incomplete structure
+    manifest_folder = temp_dirs["raw_manifest"] / name
+    manifest_folder.mkdir()
+
+    import json
+
+    # Missing required fields
+    manifest_content = {
+        "name": {"short": name}
+        # No "id" or "copilotAgents"
+    }
+
+    (manifest_folder / "manifest.json").write_text(json.dumps(manifest_content))
+
+    # Create the zip
+    zip_path = packaging.zip_manifest(name)
+
+    # Try to extract IDs (should return None due to missing fields)
+    result = packaging.extract_ids_from_zip(zip_path)
+    assert result is None
+
+
+def test_extract_ids_from_zip_corrupted_json(temp_dirs):
+    """Test extracting IDs from a zip with corrupted manifest.json."""
+    name = "CorruptedAgent"
+
+    # Create a manifest folder with invalid JSON
+    manifest_folder = temp_dirs["raw_manifest"] / name
+    manifest_folder.mkdir()
+
+    (manifest_folder / "manifest.json").write_text("{invalid json content")
+
+    # Create the zip
+    zip_path = packaging.zip_manifest(name)
+
+    # Try to extract IDs (should return None due to JSON error)
+    result = packaging.extract_ids_from_zip(zip_path)
+    assert result is None

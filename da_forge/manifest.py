@@ -6,13 +6,16 @@ import json
 import shutil
 import uuid
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 from da_forge import config
 
 
 def create_raw_manifest(
-    name: str, description: str = "-", instruction: str = "-"
+    name: str,
+    description: str = "-",
+    instruction: str = "-",
+    existing_ids: Optional[Tuple[str, str]] = None,
 ) -> Path:
     """
     Creates a raw manifest folder for a given DA name from template.
@@ -27,6 +30,8 @@ def create_raw_manifest(
         name: The name of the Declarative Agent
         description: Description for the DA (default: "-")
         instruction: Instructions for the DA (default: "-")
+        existing_ids: Optional tuple of (manifest_id, declarative_agent_id) to preserve
+                      from an existing manifest. If None, new UUIDs will be generated.
 
     Returns:
         Path to the created manifest folder
@@ -46,9 +51,14 @@ def create_raw_manifest(
         if file_path.is_file():
             shutil.copy2(file_path, manifest_folder / file_path.name)
 
-    # Generate two new GUIDs
-    manifest_id = str(uuid.uuid4())
-    declarative_agent_id = str(uuid.uuid4())
+    # Use existing IDs if provided, otherwise generate new GUIDs
+    if existing_ids:
+        manifest_id, declarative_agent_id = existing_ids
+        print(f"  - Reusing existing Manifest ID: {manifest_id}")
+        print(f"  - Reusing existing Declarative Agent ID: {declarative_agent_id}")
+    else:
+        manifest_id = str(uuid.uuid4())
+        declarative_agent_id = str(uuid.uuid4())
 
     # Update manifest.json
     manifest_json_path = manifest_folder / config.APP_MANIFEST_FILENAME
@@ -58,8 +68,9 @@ def create_raw_manifest(
     # Update main id
     manifest_json["id"] = manifest_id
 
-    # Update name
-    manifest_json["name"]["short"] = name
+    # Update name (short name must be <= 30 characters for sideload)
+    short_name = name[:30] if len(name) > 30 else name
+    manifest_json["name"]["short"] = short_name
     manifest_json["name"]["full"] = name
 
     # Update description

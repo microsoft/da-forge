@@ -165,9 +165,9 @@ def test_deploy_agent_skip_sideload(temp_dirs, capsys):
     # Check output
     captured = capsys.readouterr()
     assert "STEP 1: Validating socket file" in captured.out
-    assert "STEP 2: Creating raw manifest" in captured.out
-    assert "STEP 3: Revising manifest" in captured.out
-    assert "STEP 4: Zipping manifest" in captured.out
+    assert "STEP 3: Creating raw manifest" in captured.out
+    assert "STEP 4: Revising manifest" in captured.out
+    assert "STEP 5: Zipping manifest" in captured.out
     assert "DEPLOYMENT COMPLETED SUCCESSFULLY" in captured.out
 
     # Verify files created
@@ -202,7 +202,7 @@ def test_deploy_agent_with_sideload_success(mock_sideload, temp_dirs, capsys):
 
     assert result is True
     captured = capsys.readouterr()
-    assert "STEP 5: Sideloading to Teams" in captured.out
+    assert "STEP 6: Sideloading to Teams" in captured.out
     assert "DEPLOYMENT COMPLETED SUCCESSFULLY" in captured.out
 
     # Verify sideload was called
@@ -226,7 +226,7 @@ def test_deploy_agent_with_sideload_failure(mock_sideload, temp_dirs, capsys):
 
     assert result is False
     captured = capsys.readouterr()
-    assert "STEP 5: Sideloading to Teams" in captured.out
+    assert "STEP 6: Sideloading to Teams" in captured.out
     assert "DEPLOYMENT COMPLETED WITH ERRORS" in captured.out
     assert "You can manually install the agent" in captured.out
 
@@ -255,3 +255,54 @@ def test_list_agents_no_agents(temp_dirs, capsys):
     captured = capsys.readouterr()
     assert "No agents found in sockets/ folder" in captured.out
     assert "Create a socket file to get started" in captured.out
+
+
+def test_deploy_agent_preserves_ids_on_redeploy(temp_dirs, capsys):
+    """Test that redeploying an agent preserves the original IDs."""
+    import json
+    import zipfile
+
+    name = "TestAgent"
+
+    # Create socket file
+    socket_file = temp_dirs["socket"] / f"{name}.json"
+    socket_file.write_text('[{"name": "Email", "x-items_by_id": []}]')
+
+    # First deployment
+    result1 = core.deploy_agent(name, skip_sideload=True)
+    assert result1 is True
+
+    # Extract IDs from the first deployment
+    zip_path = temp_dirs["zipped"] / f"{name}.zip"
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        with zf.open("manifest.json") as f:
+            first_manifest = json.load(f)
+
+    first_manifest_id = first_manifest["id"]
+    first_da_id = first_manifest["copilotAgents"]["declarativeAgents"][0]["id"]
+
+    # Clear output buffer
+    capsys.readouterr()
+
+    # Second deployment (redeploy)
+    result2 = core.deploy_agent(name, skip_sideload=True)
+    assert result2 is True
+
+    # Extract IDs from the second deployment
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        with zf.open("manifest.json") as f:
+            second_manifest = json.load(f)
+
+    second_manifest_id = second_manifest["id"]
+    second_da_id = second_manifest["copilotAgents"]["declarativeAgents"][0]["id"]
+
+    # Verify IDs are preserved
+    assert second_manifest_id == first_manifest_id
+    assert second_da_id == first_da_id
+
+    # Check that output indicates IDs were preserved
+    captured = capsys.readouterr()
+    assert "STEP 2: Checking for existing zip file" in captured.out
+    assert "Will preserve existing IDs" in captured.out
+    assert "Reusing existing Manifest ID" in captured.out
+    assert "Reusing existing Declarative Agent ID" in captured.out

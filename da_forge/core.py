@@ -9,7 +9,7 @@ from typing import Optional
 
 from da_forge import config
 from da_forge.manifest import create_raw_manifest, revise_da_manifest
-from da_forge.packaging import zip_manifest
+from da_forge.packaging import extract_ids_from_zip, zip_manifest
 
 
 def validate_socket_file(name: str) -> bool:
@@ -116,17 +116,28 @@ def deploy_agent(
         return False
     print()
 
-    # Step 2: Create raw manifest
-    print("STEP 2: Creating raw manifest from template")
+    # Step 2: Check for existing zip and extract IDs if present
+    existing_ids = None
+    zip_path = config.ZIPPED_MANIFESTS_FOLDER / f"{name}.zip"
+    if zip_path.exists():
+        print("STEP 2: Checking for existing zip file")
+        existing_ids = extract_ids_from_zip(zip_path)
+        if existing_ids:
+            print(f"✓ Found existing zip file: {zip_path.name}")
+            print(f"  - Will preserve existing IDs")
+        print()
+
+    # Step 3: Create raw manifest
+    print(f"STEP 3: Creating raw manifest from template")
     try:
-        create_raw_manifest(name, description, instruction)
+        create_raw_manifest(name, description, instruction, existing_ids=existing_ids)
     except Exception as e:
         print(f"✗ Failed to create manifest: {e}")
         return False
     print()
 
-    # Step 3: Revise manifest with capabilities
-    print("STEP 3: Revising manifest with capabilities from socket")
+    # Step 4: Revise manifest with capabilities
+    print("STEP 4: Revising manifest with capabilities from socket")
     try:
         revise_da_manifest(name)
     except Exception as e:
@@ -134,8 +145,8 @@ def deploy_agent(
         return False
     print()
 
-    # Step 4: Zip manifest
-    print("STEP 4: Zipping manifest")
+    # Step 5: Zip manifest
+    print("STEP 5: Zipping manifest")
     try:
         zip_path = zip_manifest(name)
     except Exception as e:
@@ -143,9 +154,9 @@ def deploy_agent(
         return False
     print()
 
-    # Step 5: Sideload to Teams (optional)
+    # Step 6: Sideload to Teams (optional)
     if not skip_sideload:
-        print("STEP 5: Sideloading to Teams")
+        print("STEP 6: Sideloading to Teams")
         if not sideload_to_teams(zip_path):
             print()
             print("=" * 60)
