@@ -5,5 +5,5 @@ A tool to automate the creation and deployment of Microsoft Teams Declarative Ag
 with grounding references (emails, meetings, documents).
 """
 
-__version__ = "0.1.0"
+__version__ = "1.1.0"
 __author__ = "Jackie Yin"
