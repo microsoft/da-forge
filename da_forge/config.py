@@ -89,6 +89,16 @@ FIELD_BEHAVIOR_OVERRIDES = "behavior_overrides"
 FIELD_ITEMS_BY_SHAREPOINT_IDS = "items_by_sharepoint_ids"
 FIELD_ITEMS_BY_ID = "x-items_by_id"
 
+# OneNote field names
+FIELD_X_PART_ID = "x-part_id"
+FIELD_PART_ID = "part_id"
+FIELD_X_PART_TYPE = "x-part_type"
+FIELD_PART_TYPE = "part_type"
+
+# Common fields to remove
+FIELD_TYPE = "type"
+FIELD_NAME = "name"
+
 # Behavior override configuration
 FIELD_BEHAVIOR_OVERRIDES_VALUE = {
     "special_instructions": {

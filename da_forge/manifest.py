@@ -170,13 +170,25 @@ def revise_da_manifest(name: str) -> Dict:
         cap_name = cap.get("name")
 
         if cap_name == config.CAPABILITY_ONEDRIVE_SHAREPOINT:
-            # Remove "type" field from items in items_by_sharepoint_ids
+            # Remove "type" and "name" fields, rename x-part_* fields for OneNote items
             cleaned_cap = cap.copy()
             if config.FIELD_ITEMS_BY_SHAREPOINT_IDS in cleaned_cap:
-                cleaned_items = [
-                    {k: v for k, v in item.items() if k != "type"}
-                    for item in cleaned_cap[config.FIELD_ITEMS_BY_SHAREPOINT_IDS]
-                ]
+                cleaned_items = []
+                for item in cleaned_cap[config.FIELD_ITEMS_BY_SHAREPOINT_IDS]:
+                    # Remove type and name fields
+                    cleaned_item = {
+                        k: v for k, v in item.items()
+                        if k not in (config.FIELD_TYPE, config.FIELD_NAME)
+                    }
+
+                    # Rename x-part_id to part_id and x-part_type to part_type for OneNote items
+                    if config.FIELD_X_PART_ID in cleaned_item:
+                        cleaned_item[config.FIELD_PART_ID] = cleaned_item.pop(config.FIELD_X_PART_ID)
+                    if config.FIELD_X_PART_TYPE in cleaned_item:
+                        cleaned_item[config.FIELD_PART_TYPE] = cleaned_item.pop(config.FIELD_X_PART_TYPE)
+
+                    cleaned_items.append(cleaned_item)
+
                 cleaned_cap[config.FIELD_ITEMS_BY_SHAREPOINT_IDS] = cleaned_items
             # add default fields
             for field, default_value in config.CAPABILITY_DEFAULT_FIELDS.items():
